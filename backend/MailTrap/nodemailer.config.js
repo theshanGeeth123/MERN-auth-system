@@ -27,23 +27,91 @@ const mailOptions = {
 // });
 
 
-const emailSend = async (client) => {
+// export const sendVerficationEmail = async (client,verfificationToken) => {
 
-  sender.sendMail(
-    {
-      from: `"${process.env.GMAIL_USER}`,
-      to: `${client}`,
-      subject: "Test Email",
-      text: "Hello! This is a test email.",
-    }
-    , (err, info) => {
-      if (err) {
-        console.error("Error:", err);
-      } else {
-        console.log("Email sent:", info.response);
-      }
+//   sender.sendMail(
+//     {
+//       from: `"${process.env.GMAIL_USER}`,
+//       to: `${client}`,
+//       subject: "Test Email",
+//       text: "Your verfication code is "+verfificationToken,
+//     }
+//     , (err, info) => {
+//       if (err) {
+//         console.error("Error:", err);
+//       } else {
+//         console.log("Email sent:", info.response);
+//       }
+//     });
+
+// }
+
+export const sendVerficationEmail = async (client, verificationToken) => {
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html>
+    <body style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, sans-serif;">
+      <table width="100%">
+        <tr>
+          <td align="center">
+            <table width="600" style="background:#ffffff; margin-top:30px; border-radius:8px;">
+              <tr>
+                <td style="background:#2563eb; color:#fff; padding:20px; text-align:center;">
+                  <h2>Email Verification</h2>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:30px;">
+                  <p>Hello,</p>
+                  <p>Please use the code below to verify your email address:</p>
+
+                  <div style="text-align:center; margin:30px 0;">
+                    <span style="
+                      font-size:24px;
+                      letter-spacing:4px;
+                      padding:15px 30px;
+                      background:#f1f5f9;
+                      border-radius:6px;
+                      font-weight:bold;
+                    ">
+                      ${verificationToken}
+                    </span>
+                  </div>
+
+                  
+
+                  <p>Regards,<br/><strong>Your App Team</strong></p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background:#f1f5f9; text-align:center; padding:15px; font-size:12px;">
+                  © 2025 Your App
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  try {
+    await sender.sendMail({
+      from: `${process.env.GMAIL_USER}>`,
+      to: client,
+      subject: "Verify Your Email",
+      html: htmlTemplate,
     });
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    throw new Error(`Failed to send verification email ${error}`);
+  }
 
-}
 
-emailSend("theshangeethanjana@gmail.com");
+};
+
+// sendVerficationEmail("theshangeethanjana@gmail.com", 122343);
+

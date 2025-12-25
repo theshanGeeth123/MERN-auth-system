@@ -1,6 +1,7 @@
 import { User } from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
-import {generateTokenAndSetCookie} from "../utils/generateTokenAndSetCookie.js";
+import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
+import { sendVerficationEmail } from "../MailTrap/nodemailer.config.js";
 
 export const signup = async (req, res) => {
 
@@ -37,6 +38,8 @@ export const signup = async (req, res) => {
 
           generateTokenAndSetCookie(res, user._id);
 
+          sendVerficationEmail(user.email,verfificationToken);
+
           res.status(201).json({
                success: true,
                message: "User registered successfully.",
@@ -50,16 +53,14 @@ export const signup = async (req, res) => {
           res.status(400).json({ success: false, message: error.message });
      }
 
-
-
-
-
 }
+
 export const login = async (req, res) => {
 
      res.send("SignUp Route");
 
 }
+
 export const logout = async (req, res) => {
 
      res.send("SignUp Route");
