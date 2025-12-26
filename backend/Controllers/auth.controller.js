@@ -1,7 +1,9 @@
 import { User } from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerficationEmail, sendWelcomeEmail } from "../MailTrap/nodemailer.config.js";
+import { sendPasswordResetEmail, sendVerficationEmail, sendWelcomeEmail } from "../MailTrap/nodemailer.config.js";
+import crypto from "crypto";
+
 
 export const signup = async (req, res) => {
 
@@ -132,3 +134,44 @@ export const logout = async (req, res) => {
      res.status(200).json({ success: true, message: "Logged out successfully" });
 
 }
+
+export const forgotPassword = async (req, res) => {
+     const { email } = req.body;
+
+     try {
+          const user = await User.findOne({ email });
+
+          if (!user) {
+               return res.status(400).json({
+                    success: false,
+                    message: "User with this email does not exist"
+               });
+          }
+
+          const resetToken = crypto.randomBytes(20).toString("hex");
+          const resetTokenExpireAt = Date.now() + 60 * 60 * 1000; // 1 hour
+
+          user.resetPasswordToken = resetToken;
+          user.resetPasswordExpiresAt = resetTokenExpireAt;
+
+          await user.save();
+
+          await sendPasswordResetEmail(
+               user.email,
+               user.name,
+               `${process.env.CLIENT_URL}/reset-password/${resetToken}`
+          );
+
+          return res.status(200).json({
+               success: true,
+               message: "Password reset link sent to your email"
+          });
+
+     } catch (error) {
+          console.error("Error during forgot password:", error);
+          return res.status(500).json({
+               success: false,
+               message: "Server error"
+          });
+     }
+};
