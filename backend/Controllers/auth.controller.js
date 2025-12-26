@@ -1,7 +1,7 @@
 import { User } from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerficationEmail } from "../MailTrap/nodemailer.config.js";
+import { sendVerficationEmail, sendWelcomeEmail } from "../MailTrap/nodemailer.config.js";
 
 export const signup = async (req, res) => {
 
@@ -38,7 +38,7 @@ export const signup = async (req, res) => {
 
           generateTokenAndSetCookie(res, user._id);
 
-          sendVerficationEmail(user.email,verfificationToken);
+          sendVerficationEmail(user.email, verfificationToken);
 
           res.status(201).json({
                success: true,
@@ -55,14 +55,80 @@ export const signup = async (req, res) => {
 
 }
 
+export const verifyEmail = async (req, res) => {
+
+     const { code } = req.body;
+
+     try {
+          const user = await User.findOne({
+               verficationToken: code,
+               verficationTokenExpireAt: { $gt: Date.now() }
+          })
+
+          if (!user) {
+               return res.status(400).json({ success: false, message: "Invalid or expired verification code" });
+          }
+
+          user.isVerified = true;
+          user.verficationToken = undefined;
+          user.verficationTokenExpireAt = undefined;
+
+          await user.save();
+
+          res.status(200).json({ success: true, message: "Email verified successfully" });
+
+          await sendWelcomeEmail(user.email, user.name);
+
+     } catch (error) {
+          console.error("Error verifying email:", error);
+          res.status(500).json({ success: false, message: "Server error while verifying email" });
+     }
+
+}
+
 export const login = async (req, res) => {
 
-     res.send("SignUp Route");
+     const { email, password } = req.body;
+
+     try {
+
+          const user = await User.findOne({ email });
+
+          if (!user) {
+               return res.status(400).json({ success: false, message: "Invalid credentials" });
+          }
+
+          const isPasswordValid = await bcryptjs.compare(password, user.password);
+
+          if (!isPasswordValid) {
+               return res.status(400).json({ success: false, message: "Invalid credentials" });
+          }
+
+          generateTokenAndSetCookie(res, user._id);
+
+          user.lastLogin = Date.now();
+
+          await user.save();
+
+          res.status(200).json({
+               success: true,
+               message: "Logged in successfully",
+               user: {
+                    ...user._doc,
+                    password: undefined
+               }
+          });
+
+     } catch (error) {
+          console.error("Error during login:", error);
+          res.status(500).json({ success: false, message: error.message });
+     }
 
 }
 
 export const logout = async (req, res) => {
 
-     res.send("SignUp Route");
+     res.clearCookie("token");
+     res.status(200).json({ success: true, message: "Logged out successfully" });
 
 }
