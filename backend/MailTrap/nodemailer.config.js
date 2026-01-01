@@ -283,5 +283,70 @@ export const sendPasswordResetEmail = async (client, userName, resetUrl) => {
   }
 };
 
+export const sendResetSuccessfullEmail = async (client, userName) => {
+  const htmlTemplate = `
+    <!DOCTYPE html>
+    <html>
+    <body style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, sans-serif;">
+      <table width="100%">
+        <tr>
+          <td align="center">
+            <table width="600" style="background:#ffffff; margin-top:30px; border-radius:8px;">
 
+              <!-- Header -->
+              <tr>
+                <td style="background:#16a34a; color:#fff; padding:20px; text-align:center;">
+                  <h2>✅ Password Reset Successful</h2>
+                </td>
+              </tr>
+
+              <!-- Body -->
+              <tr>
+                <td style="padding:30px;">
+                  <p>Hello <strong>${userName}</strong>,</p>
+
+                  <p>
+                    Your password has been successfully reset.
+                    You can now log in using your new password.
+                  </p>
+
+                  <p>
+                    If you did not perform this action, please contact our support team immediately
+                    to secure your account.
+                  </p>
+
+                  <p>
+                    Stay safe,<br/>
+                    <strong>Your App Team</strong>
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="background:#f1f5f9; text-align:center; padding:15px; font-size:12px;">
+                  © 2025 Your App. All rights reserved.
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  try {
+    await sender.sendMail({
+      from: process.env.GMAIL_USER,
+      to: client,
+      subject: "Your Password Was Reset Successfully ✅",
+      html: htmlTemplate,
+    });
+  } catch (error) {
+    console.error("Error sending password reset success email:", error);
+    throw new Error(`Failed to send password reset success email: ${error.message}`);
+  }
+};
 

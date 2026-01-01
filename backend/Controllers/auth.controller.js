@@ -1,7 +1,7 @@
 import { User } from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendPasswordResetEmail, sendVerficationEmail, sendWelcomeEmail } from "../MailTrap/nodemailer.config.js";
+import { sendPasswordResetEmail, sendResetSuccessfullEmail, sendVerficationEmail, sendWelcomeEmail } from "../MailTrap/nodemailer.config.js";
 import crypto from "crypto";
 
 
@@ -175,3 +175,42 @@ export const forgotPassword = async (req, res) => {
           });
      }
 };
+
+
+export const resetPassword = async (req, res) => {
+     try {
+
+          const token = req.params.token;
+          const { password } = req.body;
+
+          const user = await User.findOne({
+               resetPasswordToken: token
+          });
+
+          if (!user) {
+               return res.status(400).json({ success: false, message: "Invalid or expired password reset token" });
+          }
+
+          // update password 
+
+          const hashedPassword = await bcryptjs.hash(password, 10);
+
+          user.password = hashedPassword;
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpiresAt = undefined;
+
+          await user.save();
+
+          await sendResetSuccessfullEmail(user.email, user.name);
+
+          res.status(200).json({ success: true, message: "Password reset successfully" });
+
+
+     } catch (error) {
+          console.error(error);
+          res.status(500).json({
+               success: false,
+               message: "Server error while resetting password"
+          });
+     }
+}
