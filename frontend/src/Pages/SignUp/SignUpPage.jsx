@@ -1,11 +1,13 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { motion as Motion } from "framer-motion";
 import { User, Mail, Lock } from "lucide-react";
+import PasswordSection from "./PasswordSection";
+import PasswordStatus from "./PasswordStatus";
 
 function SignUpPage() {
 
-    const [name,setName] = useState("");
-    const [email,setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
 
@@ -26,30 +28,7 @@ function SignUpPage() {
     }, [checks]);
 
 
-    const strength = useMemo(() => {
-        const percent = (score / 5) * 100;
-
-        let label = "Very Weak";
-        let colorClass = "bg-red-500";
-
-        if (score === 2) {
-            label = "Weak";
-            colorClass = "bg-orange-500";
-        } else if (score === 3) {
-            label = "Medium";
-            colorClass = "bg-yellow-500";
-        } else if (score === 4) {
-            label = "Strong";
-            colorClass = "bg-sky-500";
-        } else if (score === 5) {
-            label = "Very Strong";
-            colorClass = "bg-emerald-500";
-        }
-
-        return { percent, label, colorClass };
-    }, [score]);
-
-     const isValidPassword = score === 5;
+    const isValidPassword = score === 5;
 
 
     return (
@@ -103,66 +82,12 @@ function SignUpPage() {
                     {/* Password */}
                     <div className="relative">
                         <Lock className="absolute left-3 top-3.5 text-slate-400 w-5 h-5" />
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full pl-10 pr-4 py-3 rounded-lg 
-                            bg-slate-800/60 border border-slate-700 
-                            text-white placeholder-slate-400 
-                            focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500
-                            transition"
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                            }}
-
-                            value={password}
-                        />
+                        <PasswordSection password={password} setPassword={setPassword} checks={checks} />
                     </div>
                 </div>
 
 
-                <div className="mt-4">
-
-                    {password.length > 0 && (
-                        <>
-                            <div className="flex justify-between text-xs text-slate-400 mb-1">
-                                <span>Password strength</span>
-                                <span className="text-slate-200">{strength.label}</span>
-                            </div>
-
-                            <div className="h-1 w-full bg-slate-700 rounded-full mb-3">
-                                <div
-                                    className={`h-full ${strength.colorClass} rounded-full transition-all duration-300`}
-                                    style={{ width: `${strength.percent}%` }}
-                                />
-                            </div>
-                        </>
-
-                    )}
-
-                    <ul className="text-xs text-slate-400 space-y-1">
-                        <li className={checks.minLen ? "text-emerald-400" : "text-slate-400"}>
-                            {checks.minLen ? "✔" : "✖"} At least 6 characters
-                        </li>
-
-                        <li className={checks.upper ? "text-emerald-400" : "text-slate-400"}>
-                            {checks.upper ? "✔" : "✖"} Contains uppercase letter
-                        </li>
-
-                        <li className={checks.lower ? "text-emerald-400" : "text-slate-400"}>
-                            {checks.lower ? "✔" : "✖"} Contains lowercase letter
-                        </li>
-
-                        <li className={checks.number ? "text-emerald-400" : "text-slate-400"}>
-                            {checks.number ? "✔" : "✖"} Contains a number
-                        </li>
-
-                        <li className={checks.special ? "text-emerald-400" : "text-slate-400"}>
-                            {checks.special ? "✔" : "✖"} Contains special character
-                        </li>
-
-                    </ul>
-                </div>
+                <PasswordStatus checks={checks}  password={password} score={score}/>
 
                 <button
                     className="mt-6 w-full py-3 rounded-lg 
@@ -177,7 +102,7 @@ function SignUpPage() {
                 </button>
             </div>
 
-            
+
             <div className="bg-slate-900/50 text-center py-4 text-sm text-slate-400">
                 Already have an account?{" "}
                 <span className="text-sky-400 cursor-pointer hover:underline">

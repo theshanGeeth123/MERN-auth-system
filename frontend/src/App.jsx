@@ -1,6 +1,6 @@
 import FloatingShape from './Components/FloatingShape.jsx';
 import {Routes, Route} from 'react-router-dom';
-import SignUpPage from './Pages/SignUpPage.jsx';
+import SignUpPage from './Pages/SignUp/SignUpPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 
 
