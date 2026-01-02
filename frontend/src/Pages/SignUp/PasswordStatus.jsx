@@ -30,9 +30,13 @@ const PasswordStatus = ({ checks, password, score }) => {
 
 
     return (
+
+        <>
+
+        {password.length > 0 && (
         <div className="mt-4">
 
-            {password.length > 0 && (
+            
                 <>
                     <div className="flex justify-between text-xs text-slate-400 mb-1">
                         <span>Password strength</span>
@@ -47,7 +51,7 @@ const PasswordStatus = ({ checks, password, score }) => {
                     </div>
                 </>
 
-            )}
+           
 
             <ul className="text-xs space-y-1">
                 <li className="flex items-center gap-2">
@@ -109,6 +113,9 @@ const PasswordStatus = ({ checks, password, score }) => {
            
 
         </div>
+         )}
+
+         </>
     )
 }
 
