@@ -2,9 +2,14 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 
+import { useAuthStore } from "../store/authStore.js";
+import toast from "react-hot-toast";
+
 const EmailVerficationPage = () => {
+
+  const { verifyEmail,isLoading } = useAuthStore();
+
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -15,10 +20,9 @@ const EmailVerficationPage = () => {
   };
 
   const handleChange = (index, value) => {
-    // Allow only digits
+   
     const digitsOnly = value.replace(/\D/g, "");
 
-    // If user pasted/typed multiple digits, spread across inputs
     if (digitsOnly.length > 1) {
       const newCode = [...code];
       let cursor = index;
@@ -30,18 +34,15 @@ const EmailVerficationPage = () => {
 
       setCode(newCode);
 
-      // Focus next empty (or last)
       const nextIndex = Math.min(cursor, 5);
       focusInput(nextIndex);
       return;
     }
 
-    // Normal single digit input
     const newCode = [...code];
-    newCode[index] = digitsOnly; // "" or "0-9"
+    newCode[index] = digitsOnly; 
     setCode(newCode);
 
-    // Auto move forward if a digit entered
     if (digitsOnly && index < 5) {
       focusInput(index + 1);
     }
@@ -49,13 +50,11 @@ const EmailVerficationPage = () => {
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace") {
-      // If current is empty, go back
       if (!code[index] && index > 0) {
         focusInput(index - 1);
         return;
       }
 
-      // If current has a value, clear it (keeps cursor here)
       if (code[index]) {
         e.preventDefault();
         const newCode = [...code];
@@ -64,7 +63,6 @@ const EmailVerficationPage = () => {
       }
     }
 
-    // Optional: Arrow navigation
     if (e.key === "ArrowLeft" && index > 0) focusInput(index - 1);
     if (e.key === "ArrowRight" && index < 5) focusInput(index + 1);
   };
@@ -93,27 +91,13 @@ const EmailVerficationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
-
+    
     try {
-      setIsLoading(true);
-
-      // ✅ Replace this with your real API call
-      // Example:
-      // await axios.post("/api/auth/verify-email", { code: otp });
-
-      await new Promise((r) => setTimeout(r, 900)); // demo
-
-      // Navigate after success
-      navigate("/login"); // change route if you want
-    } catch (err) {
-      // On error: clear and focus first
-      setCode(["", "", "", "", "", ""]);
-      focusInput(0);
-      console.error(err);
-      alert("Invalid code. Please try again.");
-    } finally {
-      setIsLoading(false);
+      await verifyEmail(otp);
+      navigate("/login");
+      toast.success("Email Verified succesfully");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -133,7 +117,7 @@ const EmailVerficationPage = () => {
           Enter the 6-digit code sent to your email address.
         </p>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" >
           <div className="flex justify-between gap-2">
             {code.map((digit, index) => (
               <input
@@ -158,6 +142,7 @@ const EmailVerficationPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
+            onClick={handleSubmit}
             disabled={isLoading || !canSubmit}
             className="cursor-pointer w-full bg-gradient-to-r from-blue-500 to-blue-600 
               text-white font-bold py-3 px-4 rounded-lg shadow-lg
