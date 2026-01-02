@@ -4,8 +4,21 @@ import SignUpPage from './Pages/SignUp/SignUpPage.jsx';
 import LoginPage from './Pages/Login/LoginPage.jsx';
 import EmailVerficationPage from './Pages/EmailVerficationPage.jsx';
 import {Toaster} from 'react-hot-toast'
+import { useAuthStore } from './store/authStore.js';
+import { useEffect } from 'react';
 
 function App() {
+
+
+  const {isCheckingAuth,checkAuth,isAuthenicated,user} = useAuthStore();
+
+  useEffect(()=>{
+    checkAuth();
+  },[checkAuth])
+
+  console.log("isAuthenticated ",isAuthenicated);
+  console.log(user);
+
   return (
     <div
       className='min-h-screen bg-linear-to-br from-gray-900 via-blue-900 to-blue-500 flex items-center justify-center relative overflow-hidden'

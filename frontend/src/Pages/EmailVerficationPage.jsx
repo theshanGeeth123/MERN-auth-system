@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 const EmailVerficationPage = () => {
 
-  const { verifyEmail,isLoading } = useAuthStore();
+  const { error,verifyEmail,isLoading } = useAuthStore();
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
 
@@ -94,7 +94,7 @@ const EmailVerficationPage = () => {
     
     try {
       await verifyEmail(otp);
-      navigate("/login");
+      navigate("/");
       toast.success("Email Verified succesfully");
     } catch (error) {
       console.log(error);
@@ -138,6 +138,11 @@ const EmailVerficationPage = () => {
             ))}
           </div>
 
+          {error && <p className="text-red-500 font-semibold mt-2">
+            {error}
+          </p>}
+
+            
           <Motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
