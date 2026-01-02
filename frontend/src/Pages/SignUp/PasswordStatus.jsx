@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Check, X } from "lucide-react";
 
 const PasswordStatus = ({ checks, password, score }) => {
 
@@ -48,28 +49,65 @@ const PasswordStatus = ({ checks, password, score }) => {
 
             )}
 
-            <ul className="text-xs text-slate-400 space-y-1">
-                <li className={checks.minLen ? "text-emerald-400" : "text-slate-400"}>
-                    {checks.minLen ? "✔" : "✖"} At least 6 characters
+            <ul className="text-xs space-y-1">
+                <li className="flex items-center gap-2">
+                    {checks.minLen ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                        <X className="w-4 h-4 text-slate-400" />
+                    )}
+                    <span className={checks.minLen ? "text-emerald-400" : "text-slate-400"}>
+                        At least 6 characters
+                    </span>
                 </li>
 
-                <li className={checks.upper ? "text-emerald-400" : "text-slate-400"}>
-                    {checks.upper ? "✔" : "✖"} Contains uppercase letter
+                <li className="flex items-center gap-2">
+                    {checks.upper ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                        <X className="w-4 h-4 text-slate-400" />
+                    )}
+                    <span className={checks.upper ? "text-emerald-400" : "text-slate-400"}>
+                        Contains uppercase letter
+                    </span>
                 </li>
 
-                <li className={checks.lower ? "text-emerald-400" : "text-slate-400"}>
-                    {checks.lower ? "✔" : "✖"} Contains lowercase letter
+                <li className="flex items-center gap-2">
+                    {checks.lower ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                        <X className="w-4 h-4 text-slate-400" />
+                    )}
+                    <span className={checks.lower ? "text-emerald-400" : "text-slate-400"}>
+                        Contains lowercase letter
+                    </span>
                 </li>
 
-                <li className={checks.number ? "text-emerald-400" : "text-slate-400"}>
-                    {checks.number ? "✔" : "✖"} Contains a number
+                <li className="flex items-center gap-2">
+                    {checks.number ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                        <X className="w-4 h-4 text-slate-400" />
+                    )}
+                    <span className={checks.number ? "text-emerald-400" : "text-slate-400"}>
+                        Contains a number
+                    </span>
                 </li>
 
-                <li className={checks.special ? "text-emerald-400" : "text-slate-400"}>
-                    {checks.special ? "✔" : "✖"} Contains special character
+                <li className="flex items-center gap-2">
+                    {checks.special ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                    ) : (
+                        <X className="w-4 h-4 text-slate-400" />
+                    )}
+                    <span className={checks.special ? "text-emerald-400" : "text-slate-400"}>
+                        Contains special character
+                    </span>
                 </li>
-
             </ul>
+
+           
+
         </div>
     )
 }

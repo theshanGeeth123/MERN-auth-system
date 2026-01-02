@@ -3,8 +3,11 @@ import { motion as Motion } from "framer-motion";
 import { User, Mail, Lock } from "lucide-react";
 import PasswordSection from "./PasswordSection";
 import PasswordStatus from "./PasswordStatus";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
+
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -49,6 +52,7 @@ function SignUpPage() {
                     <div className="relative">
                         <User className="absolute left-3 top-3.5 text-slate-400 w-5 h-5" />
                         <input
+                            required
                             type="text"
                             placeholder="Full Name"
                             className="w-full pl-10 pr-4 py-3 rounded-lg 
@@ -66,6 +70,7 @@ function SignUpPage() {
                     <div className="relative">
                         <Mail className="absolute left-3 top-3.5 text-slate-400 w-5 h-5" />
                         <input
+                            required
                             type="email"
                             placeholder="Email Address"
                             className="w-full pl-10 pr-4 py-3 rounded-lg 
@@ -105,7 +110,7 @@ function SignUpPage() {
 
             <div className="bg-slate-900/50 text-center py-4 text-sm text-slate-400">
                 Already have an account?{" "}
-                <span className="text-sky-400 cursor-pointer hover:underline">
+                <span onClick={()=>{navigate("/login")}} className="text-sky-400 cursor-pointer hover:underline">
                     Log in
                 </span>
             </div>
