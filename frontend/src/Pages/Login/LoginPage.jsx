@@ -14,8 +14,6 @@ function SignUpPage() {
 
   const isLoading = true;
 
-
-
   return (
     <Motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -95,8 +93,6 @@ function SignUpPage() {
                     hover:opacity-90 hover:shadow-lg hover:shadow-blue-500/30
                     transition"
           disabled={isLoading}
-
-
         >
           {isLoading? <Loader  className=" w-6 h-6 animate-spin  mx-auto"/>:"Login"}
         </button>

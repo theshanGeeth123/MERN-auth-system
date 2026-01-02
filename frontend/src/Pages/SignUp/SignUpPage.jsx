@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { motion as Motion } from "framer-motion";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Loader } from "lucide-react";
 import PasswordSection from "./PasswordSection";
 import PasswordStatus from "./PasswordStatus";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore.js";
 
 function SignUpPage() {
 
@@ -13,6 +14,21 @@ function SignUpPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const { signup, error, isLoading } = useAuthStore();
+
+
+    const handleSignUp = async (e) => {
+
+        e.preventDefault();
+
+        try {
+            await signup(email, password, name);
+            navigate("/verify-email");
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 
     const checks = useMemo(() => {
         return {
@@ -84,6 +100,13 @@ function SignUpPage() {
                         />
                     </div>
 
+                    {error && (
+                        <p className="text-red-500 font-semibold mt-2">
+                            {error}
+                        </p>
+                    )}
+
+
                     {/* Password */}
                     <div className="relative">
                         <Lock className="absolute left-3 top-3.5 text-slate-400 w-5 h-5" />
@@ -91,8 +114,14 @@ function SignUpPage() {
                     </div>
                 </div>
 
+                {error && (
+                    <p className="text-red-500 font-semibold mt-2">
+                        {error}
+                    </p>
+                )}
 
-                <PasswordStatus checks={checks}  password={password} score={score}/>
+
+                <PasswordStatus checks={checks} password={password} score={score} />
 
                 <button
                     className="mt-6 w-full py-3 rounded-lg 
@@ -101,16 +130,20 @@ function SignUpPage() {
                     hover:opacity-90 hover:shadow-lg hover:shadow-blue-500/30
                     transition"
 
-                    disabled={!isValidPassword}
+                    disabled={isLoading || !isValidPassword}
+
+                    
+
+                    onClick={handleSignUp}
                 >
-                    Sign Up
+                    {isLoading ? <Loader className=" w-6 h-6 animate-spin  mx-auto" /> : "Sign Up"}
                 </button>
             </div>
 
 
             <div className="bg-slate-900/50 text-center py-4 text-sm text-slate-400">
                 Already have an account?{" "}
-                <span onClick={()=>{navigate("/login")}} className="text-sky-400 cursor-pointer hover:underline">
+                <span onClick={() => { navigate("/login") }} className="text-sky-400 cursor-pointer hover:underline">
                     Log in
                 </span>
             </div>
