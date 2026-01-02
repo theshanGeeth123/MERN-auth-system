@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion as Motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock,Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
@@ -8,6 +8,13 @@ function SignUpPage() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  const isLoading = true;
+
+
 
   return (
     <Motion.div
@@ -31,6 +38,9 @@ function SignUpPage() {
             <input
               required
               type="email"
+              onChange={(e)=>{
+                setEmail(e.target.value);
+              }}
               placeholder="Email Address"
               className="w-full pl-10 pr-4 py-3 rounded-lg 
                             bg-slate-800/60 border border-slate-700 
@@ -47,6 +57,9 @@ function SignUpPage() {
             <input
               required
               type={showPassword ? "text" : "password"}
+              onChange={(e)=>{
+                setPassword(e.target.value);
+              }}
               placeholder="Password"
               className="w-full pl-10 pr-4 py-3 rounded-lg 
                             bg-slate-800/60 border border-slate-700 
@@ -81,10 +94,11 @@ function SignUpPage() {
                     text-white font-semibold
                     hover:opacity-90 hover:shadow-lg hover:shadow-blue-500/30
                     transition"
+          disabled={isLoading}
 
 
         >
-          Sign In
+          {isLoading? <Loader  className=" w-6 h-6 animate-spin  mx-auto"/>:"Login"}
         </button>
       </div>
 
