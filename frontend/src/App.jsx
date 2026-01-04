@@ -1,5 +1,5 @@
 import FloatingShape from './Components/FloatingShape.jsx';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import SignUpPage from './Pages/SignUp/SignUpPage.jsx';
 import LoginPage from './Pages/Login/LoginPage.jsx';
 import EmailVerficationPage from './Pages/EmailVerficationPage.jsx';
@@ -34,9 +34,9 @@ const RedirectAuthenticatedUser = ({ children }) => {
 
 function App() {
 
-  const navigate = useNavigate();
+  
 
-  const { isCheckingAuth, checkAuth, isAuthenicated, user } = useAuthStore();
+  const { checkAuth, isAuthenicated, user } = useAuthStore();
 
   
 

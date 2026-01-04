@@ -11,6 +11,7 @@ export const useAuthStore = create((set) => ({
     error: null,
     isLoading: false,
     isCheckingAuth: true,
+    loginError:null,
 
     signup: async (email, password, name) => {
         set({ isLoading: true, error: null });
@@ -22,6 +23,24 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
+    login: async (email, password) => {
+
+        set({ isLoading: true, loginError: null });
+
+        try {
+
+            const response = await axios.post(`${API_URI}/login`, { email, password });
+
+            set({ user: response.data.user, isAuthenicated: true, loginError: null, isLoading: false })
+
+        } catch (error) {
+            set({ loginError: error.response?.data?.message || "Error logging in", isLoading: false });
+            throw error;
+        }
+
+    }
+    ,
 
     verifyEmail: async (code) => {
         set({ isLoading: true, error: null });
@@ -40,19 +59,19 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    checkAuth : async () => {
-        set({ isCheckingAuth:true,error:null});
+    checkAuth: async () => {
+        set({ isCheckingAuth: true, error: null });
 
         try {
-             const response = await axios.get(`${API_URI}/check-auth`);
+            const response = await axios.get(`${API_URI}/check-auth`);
 
-             set({user:response.data.user,isAuthenicated:true,isCheckingAuth:false});
+            set({ user: response.data.user, isAuthenicated: true, isCheckingAuth: false });
 
         } catch (error) {
-            set({ error: null, isAuthenicated: false,isCheckingAuth:false });
+            set({ error: error.response.data.message , isAuthenicated: false, isCheckingAuth: false });
         }
     },
 
-    
+
 }))
 

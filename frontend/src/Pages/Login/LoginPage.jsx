@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion as Motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock,Loader } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore.js";
 
 function SignUpPage() {
 
@@ -9,10 +10,21 @@ function SignUpPage() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const isLoading = true;
+  const { loginError, isLoading, login } = useAuthStore()
+
+
+  const handleLogin = async (e) => {
+
+    e.preventDefault();
+
+    await login(email, password);
+
+    navigate("/");
+
+  }
 
   return (
     <Motion.div
@@ -36,7 +48,7 @@ function SignUpPage() {
             <input
               required
               type="email"
-              onChange={(e)=>{
+              onChange={(e) => {
                 setEmail(e.target.value);
               }}
               placeholder="Email Address"
@@ -55,7 +67,7 @@ function SignUpPage() {
             <input
               required
               type={showPassword ? "text" : "password"}
-              onChange={(e)=>{
+              onChange={(e) => {
                 setPassword(e.target.value);
               }}
               placeholder="Password"
@@ -86,7 +98,15 @@ function SignUpPage() {
           <button className="text-blue-300/70 cursor-pointer pt-5">Forget Password</button>
         </div>
 
-        <button
+        {loginError && (
+                    <p className="text-red-500 font-semibold mt-2">
+                        {loginError}
+                    </p>
+                )}
+
+        
+
+        <button onClick={handleLogin}
           className="mt-6 w-full py-3 rounded-lg 
                     bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600
                     text-white font-semibold
@@ -94,7 +114,7 @@ function SignUpPage() {
                     transition"
           disabled={isLoading}
         >
-          {isLoading? <Loader  className=" w-6 h-6 animate-spin  mx-auto"/>:"Login"}
+          {isLoading ? <Loader className=" w-6 h-6 animate-spin  mx-auto" /> : "Login"}
         </button>
       </div>
 
