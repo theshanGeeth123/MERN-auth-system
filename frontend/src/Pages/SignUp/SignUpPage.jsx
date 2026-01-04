@@ -14,7 +14,7 @@ function SignUpPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { signup, error, isLoading } = useAuthStore();
+    const { signup, error, isLoading, signUpError } = useAuthStore();
 
 
     const handleSignUp = async (e) => {
@@ -100,13 +100,6 @@ function SignUpPage() {
                         />
                     </div>
 
-                    {error && (
-                        <p className="text-red-500 font-semibold mt-2">
-                            {error}
-                        </p>
-                    )}
-
-
                     {/* Password */}
                     <div className="relative">
                         <Lock className="absolute left-3 top-3.5 text-slate-400 w-5 h-5" />
@@ -114,9 +107,9 @@ function SignUpPage() {
                     </div>
                 </div>
 
-                {error && (
+                {signUpError && (
                     <p className="text-red-500 font-semibold mt-2">
-                        {error}
+                        {signUpError}
                     </p>
                 )}
 

@@ -9,37 +9,37 @@ import { useEffect } from 'react';
 import DashboardPage from './Pages/DashboardPage.jsx';
 import LoadingSpinner from './Components/LoadingSpinner.jsx'
 
-const ProtectedRoute = ({children}) => {
-  const {isAuthenicated,user} = useAuthStore();
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenicated, user } = useAuthStore();
 
-  if(!isAuthenicated){
-      return <Navigate to="/login" replace />
+  if (!isAuthenicated) {
+    return <Navigate to="/login" replace />
   }
 
-  if(!user.isVerified){
-     return <Navigate to="/verify-email" replace />
+  if (!user.isVerified) {
+    return <Navigate to="/verify-email" replace />
   }
 
   return children;
 }
 
 const RedirectAuthenticatedUser = ({ children }) => {
-    const { isAuthenicated, user } = useAuthStore();
+  const { isAuthenicated, user } = useAuthStore();
 
-    if (isAuthenicated && user.isVerified) {
-      return <Navigate to="/" replace />
-    }
-
-    return children;
+  if (isAuthenicated && user.isVerified) {
+    return <Navigate to="/" replace />
   }
+
+  return children;
+}
 
 function App() {
 
-  
 
-  const { isCheckingAuth ,checkAuth, isAuthenicated, user } = useAuthStore();
 
-  
+  const { isCheckingAuth, checkAuth, isAuthenicated, user } = useAuthStore();
+
+
 
   useEffect(() => {
     checkAuth();
@@ -48,7 +48,7 @@ function App() {
   console.log("isAuthenticated ", isAuthenicated);
   console.log(user);
 
-  if(isCheckingAuth) return <LoadingSpinner />
+  if (isCheckingAuth) return <LoadingSpinner />
 
   return (
     <div
@@ -61,7 +61,7 @@ function App() {
       <Routes>
         <Route path='/' element={
           <ProtectedRoute>
-            <DashboardPage/>
+            <DashboardPage />
           </ProtectedRoute>
         } />
         <Route path='/signup' element={
@@ -74,7 +74,14 @@ function App() {
             <LoginPage />
           </RedirectAuthenticatedUser>
         } />
-        <Route path='/verify-email' element={<EmailVerficationPage />} />
+
+       <Route path='/verify-email' element={
+          <RedirectAuthenticatedUser>
+            <EmailVerficationPage />
+            </RedirectAuthenticatedUser>
+          
+       } />
+
       </Routes>
 
       <Toaster />

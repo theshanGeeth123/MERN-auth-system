@@ -94,7 +94,7 @@ const EmailVerficationPage = () => {
     
     try {
       await verifyEmail(otp);
-      navigate("/");
+      navigate("/",{ replace: true });
       toast.success("Email Verified succesfully");
     } catch (error) {
       console.log(error);
