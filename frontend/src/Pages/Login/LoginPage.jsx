@@ -93,7 +93,11 @@ function SignUpPage() {
 
 
         <div>
-          <button className="text-blue-300/70 cursor-pointer pt-5">Forget Password</button>
+          <button onClick={ 
+            () => {
+              navigate("/forgot-password")
+            }
+          } className="text-blue-300/70 cursor-pointer pt-5">Forget Password</button>
         </div>
 
         {loginError && (

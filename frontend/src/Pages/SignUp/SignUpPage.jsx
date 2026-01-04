@@ -14,7 +14,7 @@ function SignUpPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { signup, error, isLoading, signUpError } = useAuthStore();
+    const { signup, isLoading, signUpError } = useAuthStore();
 
 
     const handleSignUp = async (e) => {
