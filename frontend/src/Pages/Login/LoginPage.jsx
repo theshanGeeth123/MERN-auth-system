@@ -22,8 +22,6 @@ function SignUpPage() {
 
     await login(email, password);
 
-    navigate("/");
-
   }
 
   return (
