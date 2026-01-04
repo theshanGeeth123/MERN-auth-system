@@ -3,16 +3,39 @@ import { motion as Motion } from "framer-motion";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../Components/LoadingSpinner";
+import { useAuthStore } from "../store/authStore";
 
 const ForgotPasswordPage = () => {
 
     const navigate = useNavigate();
 
+    const { forgotPassword } = useAuthStore();
+
     const [email, setEmail] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    
+    const [error, setError] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            await forgotPassword(email);
+            setIsSubmitted(true);
+        } catch (err) {
+            const msg =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Something went wrong. Please try again.";
+    setError(msg);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
 
     return (
 
@@ -54,7 +77,14 @@ const ForgotPasswordPage = () => {
                                         }
 
                                     />
+
+                                    
                                 </div>
+                                {
+                                        error && <p className="text-red-500 font-semibold mt-2">
+                                            {error}
+                                        </p>
+                                    }
 
                                 <button
                                     type="button"
@@ -63,6 +93,8 @@ const ForgotPasswordPage = () => {
                            hover:from-sky-500 hover:to-blue-500
                            shadow-lg shadow-sky-500/15
                            transition active:scale-[0.99]"
+
+                                    onClick={handleSubmit}
                                 >
                                     Send Reset Link
                                 </button>
